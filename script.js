@@ -8,7 +8,7 @@ const teamScores = {
 };
 
 const fantasyLeague = {
-    "Nandyala Keshava": ["Markram", "Marsh", "Gill", "Iyer", "Patidar",
+    "Nandyala Keshava": ["Markram-LSG", "Marsh", "Gill", "Iyer", "Patidar",
         "Stubbs", "KL Rahul", "Hetmyer", "Rahane", "Hardik Pandya",
         "Marco Jansen", "Riyan Parag", "Lockie Ferguson", "Rabada", "Shami"],
     "Kurnool Bittu": ["Ishan Kishan", "Salt", "Prabhsimran Singh", "Seifert", "Ruturaj Gaikwad",
