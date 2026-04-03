@@ -8,21 +8,21 @@ const teamScores = {
 };
 
 const fantasyLeague = {
-    "Nandyala Keshava": ["Markram-LSG", "Marsh", "Gill", "Iyer", "Patidar",
-        "Stubbs", "KL Rahul", "Hetmyer", "Rahane", "Hardik Pandya",
-        "Marco Jansen", "Riyan Parag", "Lockie Ferguson", "Rabada", "Shami"],
-    "Kurnool Bittu": ["Ishan Kishan", "Salt", "Prabhsimran Singh", "Seifert", "Ruturaj Gaikwad",
-        "Sai Sudarshan", "Ayush Badoni", "Pathum Nisanka", "Shivam Dube", "NKR",
-        "Harpreet Brar", "Bumrah", "Kuldeep", "Sai Kishore", "Matt henry"],
-    "Nizamabad Simham": ["Klaasen", "Samson", "Butler", "Dewald Brevis", "Ayush Mahatre",
-        "Will jacks", "Axar Patel", "Santner", "Jacob Bethell", "Shashank Singh",
-        "Bhuvi", "Noor Ahmed", "Chahal", "Khaleel Ahmed", "Mayank markande"],
-    "Warangal Raju": ["Pant", "Jaiswal", "Head", "Rohit Sharma", "Virat kohli",
-        "Vaibhav Suryavamshi", "Nehal Wadhera", "Cameron Green", "Miller", "Stoinis",
-        "Varun Chakravarthy", "Rashid Khan", "Hazlewood", "Arshdeep Singh", "Akeal hosein"],
-    "Nellore Ganga": ["Abhishek Sharma", "Priyansh Arya", "SKY", "Tilak Varma", "Tim David",
-        "Pooran", "Narine", "Krunal Pandya", "Boult", "Deepak Chahar",
-        "Harshit Rana", "Suyash Sharma", "Fin Allen", "Raghuvanshi", "Jitesh Sharma"]
+    "Nandyala Keshava": ["Markram-LSG", "Marsh-LSG", "Gill-GT", "Iyer-PBKS", "Patidar-RCB",
+        "Stubbs-DC", "KL Rahul-DC", "Hetmyer-RR", "Rahane-KKR", "Hardik Pandya-MI",
+        "Marco Jansen-PBKS", "Riyan Parag-RR", "Lockie Ferguson-PBKS", "Rabada-GT", "Shami-LSG"],
+    "Kurnool Bittu": ["Ishan Kishan-SRH", "Salt-RCB", "Prabhsimran Singh-PBKS", "Seifert-KKR", "Ruturaj Gaikwad-CSK",
+        "Sai Sudarshan-GT", "Ayush Badoni-LSG", "Pathum Nisanka-DC", "Shivam Dube-CSK", "NKR-SRH",
+        "Harpreet Brar-PBKS", "Bumrah-MI", "Kuldeep-DC", "Sai Kishore-GT", "Matt Henry-CSK"],
+    "Nizamabad Simham": ["Klaasen-SRH", "Samson-CSK", "Butler-GT", "Dewald Brevis-CSK", "Ayush Mahatre-CSK",
+        "Will jacks-MI", "Axar Patel-DC", "Santner-MI", "Jacob Bethell-RCB", "Shashank Singh-PBKS",
+        "Bhuvi-RCB", "Noor Ahmed-CSK", "Chahal-PBKS", "Khaleel Ahmed-CSK", "Mayank markande-MI"],
+    "Warangal Raju": ["Pant-LSG", "Jaiswal-RR", "Head-SRH", "Rohit Sharma-MI", "Virat kohli-RCB",
+        "Vaibhav Suryavamshi-RR", "Nehal Wadhera-PBKS", "Cameron Green-KKR", "Miller-GT", "Stoinis-PBKS",
+        "Varun Chakravarthy-KKR", "Rashid Khan-GT", "Hazlewood-RCB", "Arshdeep Singh-PBKS", "Akeal hosein-CSK"],
+    "Nellore Ganga": ["Abhishek Sharma-SRH", "Priyansh Arya-PBKS", "SKY-MI", "Tilak Varma-MI", "Tim David-RCB",
+        "Pooran-LSG", "Narine-KKR", "Krunal Pandya-RCB", "Boult-MI", "Deepak Chahar-MI",
+        "Harshit Rana-KKR", "Suyash Sharma-RCB", "Fin Allen-KKR", "Raghuvanshi-KKR", "Jitesh Sharma-RCB"]
 };
 
 function displayTeams() {
