@@ -19,12 +19,69 @@
         <div id="teams-container"></div>
 
         <!-- New rules container (hidden by default) -->
-        <div id="rules-container" style="display: none;">
-            <h2>Tournament Rules</h2>
-            <div class="rules-content">
-                <p>Rules content will be added here...</p>
-            </div>
-        </div>
+<div id="rules-container" style="display: none;">
+    <!-- BATTING -->
+    <div class="rules-section">
+        <h2>🏏 Batting Points</h2>
+        <ul>
+            <li>Run: 1 pt</li>
+            <li>Half Century: 10 pts</li>
+            <li>Century: 20 pts</li>
+            <li class="negative">Duckout: -5 pts</li>
+            <li class="negative">Golden/Diamond Duck: -10 pts</li>
+        </ul>
+    </div>
+
+    <!-- BOWLING -->
+    <div class="rules-section">
+        <h2>🔥 Bowling Points</h2>
+        <ul>
+            <li>Wicket: 15 pts</li>
+            <li>Maiden Over: 10 pts</li> <!-- New Rule Added -->
+            <li>3-Wicket Haul: 20 pts</li>
+            <li>5-Wicket Haul: 30 pts</li>
+            <li>Hattrick: 30 pts</li>
+        </ul>
+    </div>
+
+    <!-- FIELDING (Split Section) -->
+    <div class="rules-section">
+        <h2>🧤 Fielding</h2>
+        <ul>
+            <li>Catch: 5 pts</li>
+            <li>Stumping: 5 pts</li>
+            <li>Runout: 10 pts (5+5)</li>
+            <li>Runout (Direct Hit): 10 pts</li>
+        </ul>
+    </div>
+
+    <!-- MATCH AWARDS (Split Section) -->
+    <div class="rules-section">
+        <h2>🏅 Match Awards</h2>
+        <ul>
+            <li>Man of the Match: 30 pts</li>
+        </ul>
+    </div>
+
+<!-- SEASON AWARDS -->
+<div class="rules-section">
+    <h2>🏆 Season Awards</h2>
+    <ul>
+        <li>Orange Cap: 150 pts</li>
+        <li>Purple Cap: 150 pts</li>
+        <li>Man of the Tournament: 200 pts</li>
+        <li>Catch of the Season: 50 pts</li>
+        <li>Most 6s: 1 pt per 6</li>
+        <li>Most 4s: 0.5 pt per 4</li>
+        <li>Highest SR: 75 pts</li>
+        <li>Best Economy: 75 pts</li>
+        <li>Highest Indiv. Score: 30 pts</li>
+        <li>Best Bowling Figures: 30 pts</li>
+    </ul>
+</div>
+
+</div>
+
     </main>
     <script src="script.js"></script>
 </body>
