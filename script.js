@@ -52,4 +52,24 @@ function displayTeams() {
     });
 }
 
+// Toggle Logic
+const toggleBtn = document.getElementById('toggle-btn');
+const teamsContainer = document.getElementById('teams-container');
+const rulesContainer = document.getElementById('rules-container');
+
+toggleBtn.addEventListener('click', () => {
+    if (rulesContainer.style.display === 'none') {
+        // Switch to Rules view
+        teamsContainer.style.display = 'none';
+        rulesContainer.style.display = 'block';
+        toggleBtn.textContent = 'Home';
+    } else {
+        // Switch to Home (Scores) view
+        rulesContainer.style.display = 'none';
+        teamsContainer.style.display = 'block';
+        toggleBtn.textContent = 'Rules';
+    }
+});
+
+
 window.onload = displayTeams;

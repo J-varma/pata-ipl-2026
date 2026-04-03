@@ -9,9 +9,22 @@
 <body>
     <header>
         <h1>PATA IPL 2026</h1>
+        <nav>
+            <!-- The button that will toggle between Rules and Home -->
+            <button id="toggle-btn">Rules</button>
+        </nav>
     </header>
-    <main id="teams-container">
-        <!-- Teams will be injected here by JavaScript -->
+    <main id="content-area">
+        <!-- Existing scores container -->
+        <div id="teams-container"></div>
+
+        <!-- New rules container (hidden by default) -->
+        <div id="rules-container" style="display: none;">
+            <h2>Tournament Rules</h2>
+            <div class="rules-content">
+                <p>Rules content will be added here...</p>
+            </div>
+        </div>
     </main>
     <script src="script.js"></script>
 </body>
