@@ -1,10 +1,10 @@
 // Update these scores daily
 const teamScores = {
-    "Nandyala Keshava": 402,
-    "Kurnool Bittu": 344,
-    "Nizamabad Simham": 142,
-    "Warangal Raju": 399,
-    "Nellore Ganga": 227
+    "Nandyala Keshava": 415,
+    "Kurnool Bittu": 547,
+    "Nizamabad Simham": 204,
+    "Warangal Raju": 421,
+    "Nellore Ganga": 397
 };
 
 const fantasyLeague = {
