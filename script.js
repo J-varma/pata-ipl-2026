@@ -1,6 +1,6 @@
 // Update these scores daily
 const teamScores = {
-    "Nandyala Keshava": 556,
+    "Nandyala Keshava": 526,
     "Kurnool Bittu": 738,
     "Nizamabad Simham": 333,
     "Warangal Raju": 450,
