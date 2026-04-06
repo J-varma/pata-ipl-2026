@@ -1,55 +1,68 @@
-// Update these scores daily
-const teamScores = {
-    "Nandyala Keshava": 526,
-    "Kurnool Bittu": 738,
-    "Nizamabad Simham": 333,
-    "Warangal Raju": 450,
-    "Nellore Ganga": 466
-};
+// Initialize AWS
+AWS.config.region = 'us-east-1';
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: 'us-east-1:4b45cc3d-c755-482d-9058-059ca971579b'
+});
 
-const fantasyLeague = {
-    "Nandyala Keshava": ["Markram-LSG", "Marsh-LSG", "Gill-GT", "Iyer-PBKS", "Patidar-RCB",
-        "Stubbs-DC", "KL Rahul-DC", "Hetmyer-RR", "Rahane-KKR", "Hardik Pandya-MI",
-        "Marco Jansen-PBKS", "Riyan Parag-RR", "Lockie Ferguson-PBKS", "Rabada-GT", "Shami-LSG"],
-    "Kurnool Bittu": ["Ishan Kishan-SRH", "Salt-RCB", "Prabhsimran Singh-PBKS", "Seifert-KKR", "Ruturaj Gaikwad-CSK",
-        "Sai Sudarshan-GT", "Ayush Badoni-LSG", "Pathum Nisanka-DC", "Shivam Dube-CSK", "NKR-SRH",
-        "Harpreet Brar-PBKS", "Bumrah-MI", "Kuldeep-DC", "Sai Kishore-GT", "Matt Henry-CSK"],
-    "Nizamabad Simham": ["Klaasen-SRH", "Samson-CSK", "Butler-GT", "Dewald Brevis-CSK", "Ayush Mahatre-CSK",
-        "Will jacks-MI", "Axar Patel-DC", "Santner-MI", "Jacob Bethell-RCB", "Shashank Singh-PBKS",
-        "Bhuvi-RCB", "Noor Ahmed-CSK", "Chahal-PBKS", "Khaleel Ahmed-CSK", "Mayank markande-MI"],
-    "Warangal Raju": ["Pant-LSG", "Jaiswal-RR", "Head-SRH", "Rohit Sharma-MI", "Virat kohli-RCB",
-        "Vaibhav Suryavamshi-RR", "Nehal Wadhera-PBKS", "Cameron Green-KKR", "Miller-GT", "Stoinis-PBKS",
-        "Varun Chakravarthy-KKR", "Rashid Khan-GT", "Hazlewood-RCB", "Arshdeep Singh-PBKS", "Akeal hosein-CSK"],
-    "Nellore Ganga": ["Abhishek Sharma-SRH", "Priyansh Arya-PBKS", "SKY-MI", "Tilak Varma-MI", "Tim David-RCB",
-        "Pooran-LSG", "Narine-KKR", "Krunal Pandya-RCB", "Boult-MI", "Deepak Chahar-MI",
-        "Harshit Rana-KKR", "Suyash Sharma-RCB", "Fin Allen-KKR", "Raghuvanshi-KKR", "Jitesh Sharma-RCB"]
-};
+const ddbClient = new AWS.DynamoDB.DocumentClient();
 
-function displayTeams() {
+async function displayTeams() {
     const container = document.getElementById('teams-container');
-    
-    // Sort teams by score (Highest first)
-    const sortedTeams = Object.keys(fantasyLeague).sort((a, b) => teamScores[b] - teamScores[a]);
+    container.innerHTML = "<p style='text-align:center;'>Fetching IPL Standings...</p>";
 
-    sortedTeams.forEach(teamName => {
-        const teamDiv = document.createElement('div');
-        teamDiv.className = 'team-row';
-        
-        const playerList = fantasyLeague[teamName].map((p, i) => 
-            `<li><span class="rank">${i + 1}</span> ${p || "---"}</li>`
-        ).join('');
+    try {
+        // 1. Parallel Fetch
+        const [rosterData, scoreData] = await Promise.all([
+            ddbClient.scan({ TableName: 'owners_2026' }).promise(),
+            ddbClient.scan({ TableName: 'owners_daily_scores_2026' }).promise()
+        ]);
 
-        teamDiv.innerHTML = `
-            <div class="team-info">
-                <h2>${teamName}</h2>
-                <div class="score-badge">${teamScores[teamName]} pts</div>
-            </div>
-            <div class="player-grid">
-                <ul>${playerList}</ul>
-            </div>
-        `;
-        container.appendChild(teamDiv);
-    });
+        // 2. Process Rosters
+        const rosters = {};
+        rosterData.Items.forEach(item => {
+            if (!rosters[item.owner]) rosters[item.owner] = [];
+            rosters[item.owner].push(`${item.player}-${item.ipl_team}`);
+        });
+
+        // 3. Process Cumulative Scores
+        const totals = {};
+        scoreData.Items.forEach(item => {
+            totals[item.owner] = (totals[item.owner] || 0) + (parseFloat(item.match_score) || 0);
+        });
+
+        container.innerHTML = ""; // Clear loader
+
+        // 4. Sort Owners by Total Score
+        const sortedOwners = Object.keys(rosters).sort((a, b) => 
+            (totals[b] || 0) - (totals[a] || 0)
+        );
+
+        // 5. Render to UI
+        sortedOwners.forEach(ownerName => {
+            const score = totals[ownerName] || 0;
+            const teamDiv = document.createElement('div');
+            teamDiv.className = 'team-row';
+            
+            const playerList = rosters[ownerName].map((p, i) => 
+                `<li><span class="rank">${i + 1}</span> ${p}</li>`
+            ).join('');
+
+            teamDiv.innerHTML = `
+                <div class="team-info">
+                    <h2>${ownerName}</h2>
+                    <div class="score-badge">${score.toLocaleString()} pts</div>
+                </div>
+                <div class="player-grid">
+                    <ul>${playerList}</ul>
+                </div>
+            `;
+            container.appendChild(teamDiv);
+        });
+
+    } catch (err) {
+        console.error("Data Fetch Error:", err);
+        container.innerHTML = "<p style='color:red;'>Error connecting to DynamoDB. Check your Cognito Identity Pool ID.</p>";
+    }
 }
 
 // Toggle Logic
@@ -70,6 +83,5 @@ toggleBtn.addEventListener('click', () => {
         toggleBtn.textContent = 'Rules';
     }
 });
-
 
 window.onload = displayTeams;
