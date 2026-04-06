@@ -9,7 +9,7 @@ h1 { margin: 0; letter-spacing: 2px; text-transform: uppercase; }
     background: #1e293b; 
     margin-bottom: 20px; 
     border-radius: 12px; 
-    overflow: hidden;
+    overflow-x: auto; /* Allow horizontal scroll if content is too wide */
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
 }
 
@@ -154,7 +154,7 @@ nav { margin-top: 15px; }
     padding: 20px;
 }
 
-.match-name-badge { 
+.match-name-badge {
     font-size: 1.3rem; 
     font-weight: bold; 
     /* background: #1e3a8a;  */
@@ -180,7 +180,7 @@ nav { margin-top: 15px; }
 
 /* Balanced padding and centering for table cells */
 .match-table th, .match-table td {
-    padding: 12px 30px;      /* Increased horizontal padding for better breathing room */
+    padding: 16px 30px;      /* Increased horizontal padding for better breathing room */
     text-align: center;
     border-bottom: 1px solid #1e293b;
 }
@@ -197,10 +197,17 @@ nav { margin-top: 15px; }
 /* Mobile Tweak: Allow table to scroll if the screen is too narrow */
 @media (max-width: 650px) {
     .match-table {
-        min-width: 100%;
-        font-size: 0.8rem;
+        min-width: 450px; /* Keep it wide enough to be readable */
+        font-size: 0.85rem;
     }
     .match-table th, .match-table td {
-        padding: 10px 10px;
+        padding: 10px 5px; /* Reduced horizontal padding */
+        font-size: 1rem;  /* Make emojis slightly larger/clearer if needed */
+    }
+    /* Give the Player name column more room since it's the only text */
+    .match-table th:first-child, 
+    .match-table td:first-child {
+        min-width: 100px;
+        padding-left: 10px;
     }
 }

@@ -155,7 +155,14 @@ async function renderMatchTables(playerPoints, mId) {
                 </div>
                 <table class="match-table">
                     <thead>
-                        <tr><th>Player</th><th>Batting</th><th>Bowling</th><th>Fielding</th><th>MOM</th><th>Total</th></tr>
+                        <tr>
+                            <th style="text-align: left;">Player</th>
+                            <th>🏏</th> <!-- Batting -->
+                            <th>⚾️</th> <!-- Bowling -->
+                            <th>🧤</th> <!-- Fielding -->
+                            <th>🏅</th> <!-- MOM -->
+                            <th>Total</th>
+                        </tr>
                     </thead>
                     <tbody>
                         ${relevantPoints.map(p => {
