@@ -99,3 +99,108 @@ nav { margin-top: 15px; }
 @media (max-width: 480px) {
     .rules-section ul { grid-template-columns: 1fr; }
 }
+
+/* Navigation Container */
+.nav-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+/* Base Button Style (Matching .score-badge shape) */
+.nav-btn {
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 10px 25px;
+    border-radius: 50px; /* Pill shape */
+    border: 2px solid #3b82f6;
+    background: transparent;
+    color: #f8fafc;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+/* Hover State */
+.nav-btn:hover {
+    border-color: #facc15;
+    color: #facc15;
+}
+
+/* Selected/Active State (Gold Fill, Blue Text) */
+.nav-btn.active {
+    background: #facc15; /* Gold fill */
+    color: #1e3a8a;      /* Blue text */
+    border-color: #facc15;
+    box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
+}
+
+.selector-box { text-align: center; margin-bottom: 15px; }
+#match-id-select { 
+    padding: 10px; 
+    border-radius: 8px; 
+    background: #1e293b; 
+    color: #facc15; 
+    border: 2px solid #3b82f6; 
+    font-weight: bold;
+}
+
+/* Container for the match selection dropdown */
+#matches-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.match-name-badge { 
+    font-size: 1.3rem; 
+    font-weight: bold; 
+    /* background: #1e3a8a;  */
+    background: #0f172a;
+    /* padding: 10px 20px;  */
+    /* border-radius: 50px;  */
+    /* border: 2px solid #3b82f6;  */
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Updated Match Table styling */
+.match-table {
+    width: auto;             /* Only as wide as columns need */
+    min-width: 600px;        /* Prevents it from being too narrow on large screens */
+    max-width: 95%;          /* Leaves breathing room on sides */
+    margin: 20px auto;       /* Centers the table inside the owner's section */
+    border-collapse: collapse;
+    background: #0f172a;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Balanced padding and centering for table cells */
+.match-table th, .match-table td {
+    padding: 12px 30px;      /* Increased horizontal padding for better breathing room */
+    text-align: center;
+    border-bottom: 1px solid #1e293b;
+}
+
+/* Ensure the header matches your Rules/Home themes */
+.match-table th {
+    background-color: #334155;
+    color: #facc15;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+/* Mobile Tweak: Allow table to scroll if the screen is too narrow */
+@media (max-width: 650px) {
+    .match-table {
+        min-width: 100%;
+        font-size: 0.8rem;
+    }
+    .match-table th, .match-table td {
+        padding: 10px 10px;
+    }
+}
