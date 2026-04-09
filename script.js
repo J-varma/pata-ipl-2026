@@ -76,16 +76,29 @@ function renderLeaderboard() {
 
 // 5. Matches View Logic
 function populateMatchDropdown() {
-    // Convert match_ids to numbers and find max
-    const matchIds = globalMatchScores.map(item => parseInt(item.match_id));
-    const maxId = Math.max(...matchIds);
+    // 1. Extract unique match IDs and names
+    const matchesMap = new Map();
+    globalMatchScores.forEach(item => {
+        const id = parseInt(item.match_id);
+        if (!matchesMap.has(id)) {
+            // Store the name associated with this ID
+            matchesMap.set(id, item.match_name || "TBD");
+        }
+    });
 
-    for (let i = 1; i <= maxId; i++) {
+    // 2. Sort match IDs in descending order (highest first)
+    const sortedIds = Array.from(matchesMap.keys()).sort((a, b) => b - a);
+
+    // 3. Clear and populate
+    matchSelect.innerHTML = '<option value="">-- Select Match --</option>';
+    sortedIds.forEach(id => {
+        const name = matchesMap.get(id);
         const opt = document.createElement('option');
-        opt.value = i;
-        opt.textContent = `Match ${i}`;
+        opt.value = id;
+        // Format: "10: CSK vs RCB"
+        opt.textContent = `${id}: ${name}`;
         matchSelect.appendChild(opt);
-    }
+    });
 }
 
 matchSelect.addEventListener('change', async (e) => {
