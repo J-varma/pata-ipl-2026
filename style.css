@@ -211,3 +211,9 @@ nav { margin-top: 15px; }
         padding-left: 10px;
     }
 }
+
+#stats-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}

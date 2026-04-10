@@ -9,18 +9,22 @@ const ddbClient = new AWS.DynamoDB.DocumentClient();
 // 2. Global Data Stores (to avoid re-fetching)
 let globalRosters = {};
 let globalMatchScores = [];
+let globalStatsData = null; 
 
 // 3. DOM Elements
 const homeBtn = document.getElementById('home-btn');
 const matchesBtn = document.getElementById('matches-btn');
+const statsBtn = document.getElementById('stats-btn');
 const rulesBtn = document.getElementById('rules-btn');
 
 const teamsContainer = document.getElementById('teams-container');
 const matchesContainer = document.getElementById('matches-container');
+const statsContainer = document.getElementById('stats-container');
 const rulesContainer = document.getElementById('rules-container');
 
 const matchSelect = document.getElementById('match-id-select');
 const matchDetailsArea = document.getElementById('match-details-area');
+const statsArea = document.getElementById('stats-area');
 
 // 4. Load Data once
 async function loadDashboardData() {
@@ -206,8 +210,8 @@ async function renderMatchTables(playerPoints, mId) {
 
 // 6. Navigation Switching
 function showSection(section) {
-    [teamsContainer, matchesContainer, rulesContainer].forEach(c => c.style.display = 'none');
-    [homeBtn, matchesBtn, rulesBtn].forEach(b => b.classList.remove('active'));
+    [teamsContainer, matchesContainer, rulesContainer, statsContainer].forEach(c => c.style.display = 'none');
+    [homeBtn, matchesBtn, rulesBtn, statsBtn].forEach(b => b.classList.remove('active'));
 
     if (section === 'home') {
         teamsContainer.style.display = 'block';
@@ -215,14 +219,132 @@ function showSection(section) {
     } else if (section === 'matches') {
         matchesContainer.style.display = 'block';
         matchesBtn.classList.add('active');
+    } else if (section === 'stats') {
+        statsContainer.style.display = 'block';
+        statsBtn.classList.add('active');
+        renderStats(); // Calculate stats when clicking the tab
     } else {
         rulesContainer.style.display = 'block';
         rulesBtn.classList.add('active');
     }
 }
 
+async function renderStats() {
+    // Check if we already have the data cached
+    if (globalStatsData) {
+        displayStatsHTML(globalStatsData.playerRecords, globalStatsData.allReplacements);
+        return;
+    }
+
+    statsArea.innerHTML = "<p style='text-align:center;'>Calculating Tournament Stats...</p>";
+
+    try {
+        // Only Scan if the cache is empty
+        const [playerData, replacementData] = await Promise.all([
+            ddbClient.scan({ TableName: 'matches_2026' }).promise(),
+            ddbClient.scan({ TableName: 'replacements_2026' }).promise()
+        ]);
+
+        // Cache the results globally
+        globalStatsData = {
+            playerRecords: playerData.Items,
+            allReplacements: replacementData.Items
+        };
+
+        displayStatsHTML(globalStatsData.playerRecords, globalStatsData.allReplacements);
+    } catch (err) {
+        console.error("Stats Error:", err);
+        statsArea.innerHTML = "<p style='color:red;'>Error loading tournament stats.</p>";
+    }
+}
+
+function displayStatsHTML(playerRecords, allReplacements) {
+    const getPlayedBy = (playerName, matchId) => {
+        const pNameLower = playerName.toLowerCase();
+        const mIdStr = matchId.toString();
+
+        const replacementRecord = allReplacements.find(r => 
+            r.match_id === mIdStr && r.replacement_player.toLowerCase() === pNameLower
+        );
+        if (replacementRecord) return replacementRecord.owner;
+
+        const isBenched = allReplacements.some(r => 
+            r.match_id === mIdStr && r.benching_player.toLowerCase() === pNameLower
+        );
+        if (isBenched) return "Benched";
+
+        for (const [owner, players] of Object.entries(globalRosters)) {
+            if (players.some(p => p.toLowerCase().split('-')[0] === pNameLower)) return owner;
+        }
+        return "Unsold";
+    };
+
+    // --- 1. Top Franchise Performances (🚀) ---
+    const topOwnerMatches = [...globalMatchScores]
+        .sort((a, b) => (parseFloat(b.match_score) || 0) - (parseFloat(a.match_score) || 0))
+        .slice(0, 10);
+
+    // --- 2. MVP of the Season (🔥) ---
+    const playerTotals = {};
+    playerRecords.forEach(p => {
+        const owner = getPlayedBy(p.player, p.match_id);
+        if (owner !== "Benched" && owner !== "Unsold") {
+            playerTotals[p.player] = (playerTotals[p.player] || 0) + (parseInt(p.total_points) || 0);
+        }
+    });
+    const topPlayersCumulative = Object.entries(playerTotals)
+        .sort((a, b) => b[1] - a[1]) // Correct numeric sort for entries
+        .slice(0, 10);
+
+    // --- 3. Top Player Performances (💥) ---
+    const topPlayerMatches = [...playerRecords]
+        .sort((a, b) => (parseInt(b.total_points) || 0) - (parseInt(a.total_points) || 0))
+        .slice(0, 10);
+
+    statsArea.innerHTML = `
+        ${renderStatsTable("🚀 Top Franchise Performances (Single Match)", ["Franchise", "Points", "Match"], 
+            topOwnerMatches.map(m => [m.owner, `<b>${m.match_score}</b>`, `${m.match_id}: ${m.match_name}`]))}
+        
+        ${renderStatsTable("🔥 MVP of the Season", ["Franchise", "Player", "Points"], 
+            topPlayersCumulative.map(([name, pts]) => {
+                let originalOwner = "Unsold";
+                for (const [owner, players] of Object.entries(globalRosters)) {
+                    if (players.some(p => p.toLowerCase().split('-')[0] === name.toLowerCase())) originalOwner = owner;
+                }
+                return [originalOwner, name, `<b>${pts}</b>`];
+            }))}
+        
+        ${renderStatsTable("💥 Top Player Performances (Single Match)", ["Franchise", "Player", "Points", "Match"], 
+            topPlayerMatches.map(p => {
+                const playedBy = getPlayedBy(p.player, p.match_id);
+                const isReplacement = allReplacements.some(r => 
+                    r.match_id === p.match_id.toString() && r.replacement_player.toLowerCase() === p.player.toLowerCase()
+                );
+                const displayName = isReplacement ? `➡️ ${p.player}` : p.player;
+                return [playedBy, displayName, `<b>${p.total_points}</b>`, `${p.match_id}: ${p.match_name}`];
+            }))}
+    `;
+}
+
+function renderStatsTable(title, headers, rows) {
+    return `
+        <div class="team-row" style="flex-direction:column; padding:20px; margin-bottom:40px; align-items:center;">
+            <h2 style="color:#facc15; margin-bottom:15px; text-align:center;">${title}</h2>
+            <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                <table class="match-table" style="min-width: 100%;">
+                    <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+                    <tbody>
+                        ${rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+}
+
 homeBtn.addEventListener('click', () => showSection('home'));
 matchesBtn.addEventListener('click', () => showSection('matches'));
+statsBtn.addEventListener('click', () => showSection('stats'));
 rulesBtn.addEventListener('click', () => showSection('rules'));
 
 window.onload = loadDashboardData;
